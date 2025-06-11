@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>バランスビーズ投入量自動計算</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #d32f2f;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 40px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>バランスビーズ投入量 自動計算</h1>
+    <p>以下の項目を入力してください：</p>
+    <input type="number" id="width" placeholder="タイヤ幅（例: 195）"><br>
+    <input type="number" id="aspect" placeholder="扁平率（例: 65）"><br>
+    <input type="number" id="rim" placeholder="ホイール径（インチ）（例: 15）"><br>
+    <button onclick="calculate()">計算</button>
+    <div id="result"></div>
+    <footer>
+        <p>株式会社チップトップジャパン</p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const width = parseFloat(document.getElementById("width").value);
+            const aspect = parseFloat(document.getElementById("aspect").value);
+            const rim = parseFloat(document.getElementById("rim").value);
+
+            if (isNaN(width) || isNaN(aspect) || isNaN(rim)) {
+                document.getElementById("result").innerText = "すべての項目を正しく入力してください。";
+                return;
+            }
+
+            const gramsPerCup = 85;
+            const outerDiameter = rim * 25.4 + 2 * (width * (aspect / 100));
+            const estimatedGrams = Math.round(12 * (outerDiameter / 600));
+            let resultText = "";
+
+            if (rim <= 15) {
+                resultText = "おすすめ投入量：3/4カップ（約57g）";
+            } else if (estimatedGrams <= gramsPerCup) {
+                resultText = "おすすめ投入量：1カップ（約85g）";
+            } else {
+                const cups = Math.round((estimatedGrams / gramsPerCup) * 10) / 10;
+                resultText = `おすすめ投入量：${cups}カップ（約${estimatedGrams}g）`;
+            }
+
+            document.getElementById("result").innerText = resultText;
+        }
+    </script>
+</body>
+</html>
