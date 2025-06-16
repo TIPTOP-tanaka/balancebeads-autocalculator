@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>バランスビーズ投入量計算</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 20px; max-width: 600px; margin: auto; }
+        h1 { color: #004080; }
+        input, button { font-size: 1em; padding: 8px; margin: 10px 0; width: 100%; }
+        button { background: #004080; color: white; border: none; }
+        #result { margin-top: 20px; font-weight: bold; }
+        footer { margin-top: 40px; text-align: center; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>バランスビーズ投入量計算</h1>
+    <label>タイヤ幅（mm）</label>
+    <input id="width" placeholder="例: 235">
+    <label>扁平率（%）</label>
+    <input id="aspect" placeholder="例: 60">
+    <label>ホイール径（インチ）</label>
+    <input id="rim" placeholder="例: 18">
+    <button onclick="calculate()">計算する</button>
+    <div id="result"></div>
+    <footer>© 株式会社チップトップジャパン</footer>
+    <script>
+        const tireMap = {"155/65R14": 0.75, "165/55R15": 0.75, "175/65R15": 0.75, "185/60R15": 0.75, "195/65R15": 1, "205/55R16": 1, "215/60R16": 1, "215/45R17": 1, "225/45R18": 1, "235/60R18": 1.5, "215/75R15": 1, "205/80R16": 1, "245/75R16": 1.5, "275/70R16": 1.5, "285/75R16": 1.5, "225/90R17.5": 2, "235/70R17.5": 2, "265/70R18": 2, "305/70R19.5": 2.5, "245/70R22.5": 2.5, "285/75R24.5": 3, "295/80R24.5": 4, "365/80R20": 5, "385/65R22.5": 6, "445/70R24": 7};
+
+        function calculate() {
+            const w = parseFloat(document.getElementById("width").value);
+            const a = parseFloat(document.getElementById("aspect").value);
+            const r = parseFloat(document.getElementById("rim").value);
+
+            if (isNaN(w) || isNaN(a) || isNaN(r)) {
+                document.getElementById("result").innerText = "すべての項目を入力してください。";
+                return;
+            }
+
+            const sizeKey = `${w}/${a}R${r}`;
+
+            if (tireMap[sizeKey]) {
+                const cup = tireMap[sizeKey];
+                const grams = Math.round(cup * 85);
+                document.getElementById("result").innerText = `推奨投入量：${cup}カップ（約${grams}g）`;
+            } else {
+                const outer = r * 25.4 + 2 * (w * a / 100);
+                const grams = Math.round(0.173 * outer);
+                const cups = (grams / 85).toFixed(1);
+                document.getElementById("result").innerText = `推奨投入量（計算値）：${cups}カップ（約${grams}g）`;
+            }
+        }
+    </script>
+</body>
+</html>
